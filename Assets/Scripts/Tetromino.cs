@@ -17,14 +17,19 @@ public class Tetromino : MonoBehaviour
     // --- 入力検知用のタイマー（連続入力防止用）---
     private float inputHoldTime;
     private float inputHoldDelay = 0.2f; // 初回入力後の待ち時間
-    private float inputRepeatRate = 0.05f; // 押しっぱなし時の連続入力間隔
+    private float inputRepeatRate = 0.05f; // 押しっぱなし時の連続入力間隔(左右移動用)
     private float keyRepeatTimer;
+    //ソフトドロップ用の速度調整タイマー
+    private float softDropTimer;
+    //この値を大きくするほどソフトドロップの連続落下が遅くなります(例 0.1fなら1秒間に10回,0.5fなら2回)
+    private float softDropSpeed = 0.15f;
 
     void Start()
     {
         if (gridManager == null)
         {
             gridManager = FindObjectOfType<GridManager>();
+            HandleInput();
         }
 
         if (!IsValidGridPos())
@@ -77,15 +82,28 @@ public class Tetromino : MonoBehaviour
 
         // --- 縦移動（下・Sキー）---
         // GetKey系はボタンが押されている間trueを返します
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            TrySoftDrop();
+            //TrySoftDrop();
+            if (Time.time > softDropTimer)
+            {
+                TrySoftDrop();
+                softDropTimer = Time.time + softDropSpeed;
+            }
+        }
+        else
+        {
+            softDropTimer = 0;
         }
 
         // --- 回転（スペース・上キー・Wキー）---
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
         {
             RotateTetromino();
+        }
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            HardDropTetromino();
         }
 
     }
@@ -123,6 +141,17 @@ public class Tetromino : MonoBehaviour
             fallCounter = 0; // 移動成功したので落下タイマーリセット
         }
     }
+    private void HardDropTetromino()
+    {
+        while(IsValidGridPos())
+        {
+            transform.position += new Vector3(0, -1, 0);
+        }
+        //行き過ぎたものを1つ戻す
+        transform.position -= new Vector3(0,-1,0);
+        LockTetromino();
+    }
+    
 
     // --- 移動・回転ロジック ---
     private void Move(Vector3 direction)
@@ -145,8 +174,7 @@ public class Tetromino : MonoBehaviour
         }
     }
 
-    // ハードドロップはInputManager設定で「Vertical」にボタン追加して呼び出すことも可能です
-    // private void HardDropTetromino() { ... }
+   
 
     // --- 固定処理 ---
     private void LockTetromino()
