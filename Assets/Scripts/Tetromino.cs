@@ -14,6 +14,9 @@ public class Tetromino : MonoBehaviour
 
     private bool isLocked = false;
 
+    //UIパネル表示の変数
+    public GameObject uiPanel;
+
     // --- 入力検知用のタイマー（連続入力防止用）---
     private float inputHoldTime;
     private float inputHoldDelay = 0.2f; // 初回入力後の待ち時間
@@ -26,6 +29,7 @@ public class Tetromino : MonoBehaviour
 
     void Start()
     {
+        uiPanel = GameObject.FindGameObjectWithTag("UIPanel");
         if (gridManager == null)
         {
             gridManager = FindObjectOfType<GridManager>();
@@ -36,6 +40,9 @@ public class Tetromino : MonoBehaviour
         {
             Debug.Log("ゲームオーバー：初期位置で衝突");
             Destroy(gameObject);
+            //ゲームオーバーパネルを表示
+            uiPanel.GetComponent<PanelController>().DisplayGameOverPanel();
+            
         }
     }
 
