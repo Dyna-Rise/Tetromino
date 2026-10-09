@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PanelController : MonoBehaviour
 {
@@ -17,5 +18,11 @@ public class PanelController : MonoBehaviour
     public void DisplayGameOverPanel()
     {
         gameoverPanel.SetActive(true);
+    }
+    public void Retry()
+    {
+        string sceneName  = SceneManager.GetActiveScene().name;
+        //同じシーンを読み込んでリトライできる
+        SceneManager.LoadScene(sceneName);
     }
 }
