@@ -6,6 +6,8 @@ public class GridManager : MonoBehaviour
     // グリッドのサイズ（幅と高さ）
     public int width = 10;
     public int height = 22; // 通常テトリスは隠れた2行を含め20+2段
+    public int totalPoint; //テトリスの消した時のポイント
+    private int count; //ミノを連続で消した回数
 
     // グリッドの状態を保持する2次元配列（コメントを修正）
     // 各要素にはその位置に存在するブロック（子Transform）が格納される
@@ -53,11 +55,13 @@ public class GridManager : MonoBehaviour
     {
         // 下の行から順にチェックしていく
         int y = 0;
+        count = 0;
         while (y < height)
         {
             if (IsFullLine(y))
             {
                 DeleteLine(y);
+                count++;
                 // 行を削除したら、その上の全ての行を一段下げる
                 MoveAllRowsDown(y + 1);
 
@@ -71,6 +75,27 @@ public class GridManager : MonoBehaviour
                 y++;
             }
         }
+        if (count == 1)
+        {
+            totalPoint += 100;
+            Debug.Log(totalPoint);
+        }
+        else if (count == 2)
+        {
+            totalPoint += 200;
+            Debug.Log(totalPoint);
+        }
+        else if (count == 3)
+        {
+            totalPoint += 500;
+            Debug.Log(totalPoint);
+        }
+        else if (count == 4)
+        {
+            totalPoint += 1000;
+            Debug.Log(totalPoint);
+        }
+
     }
 
     // --- 内部プライベートメソッド ---
