@@ -227,6 +227,7 @@ MonoBehaviour:
   width: 10
   height: 22
   totalPoint: 0
+  pointText: {fileID: 931755583}
 --- !u!4 &248899047
 Transform:
   m_ObjectHideFlags: 0
